@@ -17,12 +17,21 @@ spec:
       containers:
       - name: mariadb
         image: mariadb:latest
+        ports:
+        - containerPort: 3306
         env:
-        - name: DB_HOST
-          value: localhost
-        - name: DB_USER
-          value: ecomuser
-        - name: DB_PASSWORD
-          value: ecompassword
-        - name: DB_NAME
-          value: ecomdb
+        - name: MARIADB_ROOT_PASSWORD
+          value: "rootpassword"
+        - name: MYSQL_DATABASE
+          value: "ecomdb"
+        - name: MYSQL_USER
+          value: "ecomuser"
+        - name: MYSQL_PASSWORD
+          value: "ecompassword"
+        volumeMounts:
+        - name: init-script
+          mountPath: /docker-entrypoint-initdb.d/
+      volumes:
+      - name: init-script
+        configMap:
+          name: mariadb-init-script

@@ -1,3 +1,4 @@
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -15,21 +16,22 @@ spec:
         app: webapp
     spec:
       containers:
-      - name: apache
-        image: selansis/k8s_challenge:v1
-        imagePullPolicy: Always
-        ports:
-        - containerPort: 80
-        envFrom:
-        - configMapRef:
-            name: feature-toggle-config
-            key: FEATURE_DARK_MODE
-        env: 
-        - name: DB_HOST
-          value: localhost
-        - name: DB_USER
-          value: ecomuser
-        - name: DB_PASSWORD
-          value: ecompassword
-        - name: DB_NAME
-          value: ecomdb
+        - name: apache
+          image: selansis/k8s_challenge:v3
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          env:
+            - name: DB_HOST
+              value: "db-service"
+            - name: DB_USER
+              value: "ecomuser"
+            - name: DB_PASSWORD
+              value: "ecompassword"
+            - name: DB_NAME
+              value: "ecomdb"
+            - name: FEATURE_DARK_MODE
+              valueFrom:
+                configMapKeyRef:
+                  name: feature-toggle-config
+                  key: FEATURE_DARK_MODE

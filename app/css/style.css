@@ -73,7 +73,7 @@ Table of Content:
 
 body {
   font-family: "Fira Sans", sans-serif;
-  background-color: SlateGray;
+  /*Section Fix*/
 }
 body h1, body h2, body h3, body h4, body h5, body h6 {
   margin: 0;
