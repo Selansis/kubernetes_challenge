@@ -4,7 +4,15 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <?php
+        $darkModeTrue = getenv('FEATURE_DARK_MODE') === 'true';
 
+        if ($darkModeTrue) {
+        echo "<link rel=\"stylesheet\" href=\"css/style-dark.css\">\n";
+        } else {
+        echo "<link rel=\"stylesheet\" href=\"css/style-light.css\">\n";
+        }
+        ?>
         <title>Kodekloud E-Commerce</title>
 
         <!-- Favicon -->
@@ -103,9 +111,28 @@
             </div>
             <div class="row it_works">
               <?php
+                function loadEnv($path)
+                {
+                    if (!file_exists($path)) {
+                        return false;
+                    }
 
+                    $lines = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+                    foreach ($lines as $line) {
+                        if (strpos(trim($line), '#') === 0) {
+                            continue;
+                        }
+
+                        list($name, $value) = explode('=', $line, 2);
+                        $name = trim($name);
+                        $value = trim($value);
+                        putenv(sprintf('%s=%s', $name, $value));
+                    }
+                    return true;
+                }
                         // $link = mysqli_connect('172.20.1.101', 'ecomuser', 'ecompassword', 'ecomdb');
                         // Fetch database connection details directly from environment variables
+                        loadEnv(__DIR__ . '/.env');
                         $dbHost = getenv('DB_HOST');
                         $dbUser = getenv('DB_USER');
                         $dbPassword = getenv('DB_PASSWORD');

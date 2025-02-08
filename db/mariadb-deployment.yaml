@@ -18,12 +18,11 @@ spec:
       - name: mariadb
         image: mariadb:latest
         env:
-        - name: MYSQL_ROOT_PASSWORD
-          value: rootpassword
-        - name: MYSQL_DATABASE
+        - name: DB_HOST
+          value: localhost
+        - name: DB_USER
+          value: ecomuser
+        - name: DB_PASSWORD
+          value: ecompassword
+        - name: DB_NAME
           value: ecomdb
-        - name: MYSQL_USER
-          value: myuser
-        - name: MYSQL_PASSWORD
-          value: mypassword
-

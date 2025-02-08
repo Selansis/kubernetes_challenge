@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: mariadb-init-script
 data:
-  db-load-script.sql: |
+  initdb.sql: |
     USE ecomdb;
     CREATE TABLE products (
       id MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,

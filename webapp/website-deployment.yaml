@@ -23,3 +23,13 @@ spec:
         envFrom:
         - configMapRef:
             name: feature-toggle-config
+            key: FEATURE_DARK_MODE
+        env: 
+        - name: DB_HOST
+          value: localhost
+        - name: DB_USER
+          value: ecomuser
+        - name: DB_PASSWORD
+          value: ecompassword
+        - name: DB_NAME
+          value: ecomdb
