@@ -18,7 +18,8 @@
         <link rel="stylesheet" href="vendors/wow-js/animate.css">
         <!-- owl_carousel-->
         <link rel="stylesheet" href="vendors/owl_carousel/owl.carousel.css">
-
+        <!-- Promo -->
+        <link rel="stylesheet" href="css/promo.css\">
         <!-- Theme style CSS -->
         <link href="css/style.css" rel="stylesheet">
 <!--        <link href="css/responsive.css" rel="stylesheet">  -->
@@ -97,11 +98,24 @@
         </section>
         <!--==========End Slider area==========-->
 
-        <section class="best_business_area row">
+        <section class="best_business_area row">          
+                <h1>BIG PROMO -50%</h1>
             <div class="check_tittle wow fadeInUp" data-wow-delay="0.7s" id="product-list">
                 <h2>Product List</h2>
             </div>
             <div class="row it_works">
+              <?php
+                        $darkModeTrue = getenv('FEATURE_DARK_MODE') === 'true';
+
+                        if ($darkModeTrue) {
+                            echo "<link rel=\"stylesheet\" href=\"css/style-dark.css\">\n";
+                        } else {
+                            echo "<link rel=\"stylesheet\" href=\"css/style-light.css\">\n";
+                        }
+                ?>
+              
+              
+              
               <?php
 
                         // $link = mysqli_connect('172.20.1.101', 'ecomuser', 'ecompassword', 'ecomdb');
