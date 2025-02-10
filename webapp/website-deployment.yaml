@@ -21,6 +21,18 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 80
+          readinessProbe:
+                httpGet:
+                  path: /index.php
+                  port: 80
+                initialDelaySeconds: 15
+                periodSeconds: 5
+          livenessProbe:
+                httpGet:
+                  path: /index.php
+                  port: 80
+                initialDelaySeconds: 15
+                periodSeconds: 5    
           env:
             - name: DB_HOST
               value: "db-service"
@@ -35,3 +47,7 @@ spec:
                 configMapKeyRef:
                   name: feature-toggle-config
                   key: FEATURE_DARK_MODE
+          resources:
+            requests:
+              memory: "2Gi"
+              cpu: 1

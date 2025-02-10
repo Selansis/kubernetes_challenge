@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mariadb
+  name: mariadb-deployment
   labels:
     app: db
 spec:
@@ -19,6 +19,16 @@ spec:
         image: mariadb:latest
         ports:
         - containerPort: 3306
+        readinessProbe:
+          tcpSocket:
+            port: 3306
+          initialDelaySeconds: 15
+          periodSeconds: 10
+        livenessProbe:
+          tcpSocket:
+            port: 3306
+          initialDelaySeconds: 15
+          periodSeconds: 10
         env:
         - name: MARIADB_ROOT_PASSWORD
           value: "rootpassword"
@@ -31,7 +41,13 @@ spec:
         volumeMounts:
         - name: init-script
           mountPath: /docker-entrypoint-initdb.d/
+        resources:
+            requests:
+              memory: "2Gi"
+              cpu: 1
       volumes:
       - name: init-script
         configMap:
           name: mariadb-init-script
+        
+      
