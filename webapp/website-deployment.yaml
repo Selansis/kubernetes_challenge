@@ -35,13 +35,22 @@ spec:
                 periodSeconds: 5    
           env:
             - name: DB_HOST
-              value: "db-service"
-            - name: DB_USER
-              value: "ecomuser"
-            - name: DB_PASSWORD
-              value: "ecompassword"
+              value: "mariadb-service"
             - name: DB_NAME
-              value: "ecomdb"
+              valueFrom:
+                configMapKeyRef:
+                  name: mariadb-configmap
+                  key: db_name
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mariadb-secret
+                  key: username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mariadb-secret
+                  key: password
             - name: FEATURE_DARK_MODE
               valueFrom:
                 configMapKeyRef:

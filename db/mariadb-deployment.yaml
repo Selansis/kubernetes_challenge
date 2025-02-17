@@ -31,13 +31,25 @@ spec:
           periodSeconds: 10
         env:
         - name: MARIADB_ROOT_PASSWORD
-          value: "rootpassword"
+          valueFrom:
+            secretKeyRef:
+              name: mariadb-secret
+              key: root_password
         - name: MYSQL_DATABASE
-          value: "ecomdb"
+          valueFrom:
+            configMapKeyRef:
+              name: mariadb-configmap
+              key: db_name
         - name: MYSQL_USER
-          value: "ecomuser"
+          valueFrom:
+            secretKeyRef:
+              name: mariadb-secret
+              key: username
         - name: MYSQL_PASSWORD
-          value: "ecompassword"
+          valueFrom:
+            secretKeyRef:
+              name: mariadb-secret
+              key: password
         volumeMounts:
         - name: init-script
           mountPath: /docker-entrypoint-initdb.d/
