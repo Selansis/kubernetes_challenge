@@ -53,6 +53,8 @@ spec:
         volumeMounts:
         - name: init-script
           mountPath: /docker-entrypoint-initdb.d/
+        - mountPath: "/usr/"
+          name: db-pv-storage
         resources:
             requests:
               memory: "2Gi"
@@ -61,5 +63,8 @@ spec:
       - name: init-script
         configMap:
           name: mariadb-init-script
+      - name: db-pv-storage
+        PersistentVolumeClaim:
+          claimName: db-pvc
         
       
