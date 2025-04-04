@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: mariadb
-        image: mariadb:latest
+        image: mariadb:10.5
         ports:
         - containerPort: 3306
         readinessProbe:
@@ -53,18 +53,18 @@ spec:
         volumeMounts:
         - name: init-script
           mountPath: /docker-entrypoint-initdb.d/
-        - mountPath: "/usr/"
-          name: db-pv-storage
+        - name: db-pv-storage
+          mountPath: /data/
+        command: ["/usr/local/bin/docker-entrypoint.sh"]
+        args: ["mysqld"]
         resources:
-            requests:
-              memory: "2Gi"
-              cpu: 1
+          requests:
+            memory: "2Gi"
+            cpu: 1
       volumes:
       - name: init-script
         configMap:
           name: mariadb-init-script
       - name: db-pv-storage
-        PersistentVolumeClaim:
+        persistentVolumeClaim:
           claimName: db-pvc
-        
-      
