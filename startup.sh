@@ -3,8 +3,8 @@
 set -e
 
 # Update system and install dependencies
-sudo dnf update -y
-sudo dnf install -y curl wget git httpd
+sudo yum update -y
+sudo yum install -y curl wget git httpd
 
 # Install Docker
 if [ "$(uname -m)" != "aarch64" ]; then
@@ -14,9 +14,9 @@ fi
 
 if ! command -v docker &> /dev/null; then
     echo "Docker not found, installing..."
-    sudo dnf install -y dnf-plugins-core
-    sudo dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
-    sudo dnf install -y docker-ce
+    sudo yum install -y yum-plugins-core
+    sudo yum config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
+    sudo yum install -y docker-ce
     sudo systemctl enable --now docker
     sudo usermod -aG docker $USER
     docker --version
@@ -37,19 +37,6 @@ if ! command -v minikube &> /dev/null; then
 else
     echo "Minikube already installed."
     minikube version
-fi
-
-
-# Install Terraform
-if ! command -v terraform &> /dev/null; then
-    echo "Terraform not found, installing..."
-    sudo dnf install -y dnf-plugins-core
-    sudo dnf config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
-    sudo dnf install -y terraform
-    terraform version
-else
-    echo "Terraform already installed."
-    terraform version
 fi
 #install kubectl
 if ! command -v kubectl &> /dev/null; then
