@@ -1,0 +1,31 @@
+infrastructure/.terraform.lock.hcl
+infrastructure/.terraform/providers/registry.terraform.io/hashicorp/aws/5.94.1/linux_arm64/LICENSE.txt
+infrastructure/.terraform/providers/registry.terraform.io/hashicorp/aws/5.94.1/linux_arm64/terraform-provider-aws_v5.94.1_x5
+infrastructure/.terraform/providers/registry.terraform.io/hashicorp/local/2.5.2/linux_arm64/LICENSE.txt
+infrastructure/.terraform/providers/registry.terraform.io/hashicorp/local/2.5.2/linux_arm64/terraform-provider-local_v2.5.2_x5
+infrastructure/.terraform/providers/registry.terraform.io/hashicorp/tls/4.0.6/linux_arm64/LICENSE.txt
+infrastructure/.terraform/providers/registry.terraform.io/hashicorp/tls/4.0.6/linux_arm64/terraform-provider-tls_v4.0.6_x5
+
+# Ignoring terraform
+*.tfstate
+*.tfstate.backup
+.terraform/
+.terraform.lock.hcl
+
+# Ignoring private keys
+*.pem
+*.key
+
+# Ignoring logs
+*.log
+
+# Ignoring tmp 
+*.swp
+*.bak
+*.tmp
+.DS_Store
+
+# Ignring ide files
+.vscode/
+.idea/
+*.iml
