@@ -59,7 +59,12 @@ kubectl set resources deployment website-deployment \
   --requests=memory="512Mi",cpu="0.5"
 kubectl set resources deployment mariadb-deployment \
   --containers=mariadb \
-  --requests=memory="512Mi",cpu="0.5"
+  --requests=memory="512Mi",cpu="0.5" 
+while [[ $(kubectl get deployments website-deployment mariadb-deployment -o jsonpath='{.items[*].status.conditions[?(@.type=="Available")].status}' | grep -c True) -ne 2 ]]; do
+    echo "Waiting for deployments to be running..."
+    sleep 5
+done
+
 sudo usermod -aG docker ec2-user
 newgrp docker
 echo "You can access the web app at:"
