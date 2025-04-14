@@ -11,7 +11,7 @@ resource "aws_key_pair" "k8s_key" {
 
 resource "aws_instance" "k8s_instance" {
   ami           = "ami-00a929b66ed6e0de6" # Amazon Linux 2023 AMI (ARM64)
-  instance_type = "t2.micro"
+  instance_type = "t2.medium"
   subnet_id     = aws_subnet.k8s_subnet.id
   key_name      = aws_key_pair.k8s_key.key_name
   vpc_security_group_ids = [aws_security_group.k8s_sg.id]
