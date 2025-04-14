@@ -27,5 +27,5 @@ resource "aws_instance" "k8s_instance" {
 resource "local_file" "private_key" {
   filename = "${path.module}/k8s-key.pem"
   content  = tls_private_key.k8s_key.private_key_pem
-  file_permission = 400
+  file_permission = 0400
 }

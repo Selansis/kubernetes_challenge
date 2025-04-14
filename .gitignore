@@ -15,7 +15,7 @@ infrastructure/.terraform/providers/registry.terraform.io/hashicorp/tls/4.0.6/li
 # Ignoring private keys
 *.pem
 *.key
-
+infrastructure/k8s-key.pem
 # Ignoring logs
 *.log
 
@@ -29,3 +29,4 @@ infrastructure/.terraform/providers/registry.terraform.io/hashicorp/tls/4.0.6/li
 .vscode/
 .idea/
 *.iml
+
