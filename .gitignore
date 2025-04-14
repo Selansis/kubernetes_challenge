@@ -30,3 +30,4 @@ infrastructure/k8s-key.pem
 .idea/
 *.iml
 
+infrastructure/k8s-key.pem
