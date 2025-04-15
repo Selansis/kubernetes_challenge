@@ -24,6 +24,10 @@ resource "aws_instance" "k8s_instance" {
   output "ssh_to_k8s_connection_command" {
     value = "ssh -i ${local_file.private_key.filename} ec2-user@${aws_instance.k8s_instance.public_ip} -o StrictHostKeyChecking=no"
   }
+  output "website_url" {
+    value = "http://${aws_instance.k8s_instance.public_ip}:30007/"
+    
+  }
 resource "local_file" "private_key" {
   filename = "${path.module}/k8s-key.pem"
   content  = tls_private_key.k8s_key.private_key_pem
