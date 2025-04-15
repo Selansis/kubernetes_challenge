@@ -59,11 +59,9 @@ kubectl set resources deployment website-deployment \
   --requests=memory="512Mi",cpu="0.5"
 kubectl set resources deployment mariadb-deployment \
   --containers=mariadb \
-  --requests=memory="512Mi",cpu="0.5" 
-while [[ $(kubectl get deployments website-deployment mariadb-deployment -o jsonpath='{.items[*].status.conditions[?(@.type=="Available")].status}' | grep -c True) -ne 2 ]]; do
-    echo "Waiting for deployments to be running..."
-    sleep 5
-done
+  --requests=memory=256Mi,cpu=250m
+kubectl wait --for=condition=available --timeout=300s deployment/website-deployment
+kubectl wait --for=condition=available --timeout=300s deployment/mariadb-deployment
 
 sudo usermod -aG docker ec2-user
 newgrp docker

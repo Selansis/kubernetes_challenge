@@ -1,4 +1,4 @@
-
+## This Terraform configuration file sets up an EC2 instance with minikube cluster
 resource "tls_private_key" "k8s_key" {
   algorithm = "RSA"
   rsa_bits  = 2048
@@ -21,8 +21,8 @@ resource "aws_instance" "k8s_instance" {
       Name = "k8s-instance"
     }
   }
-  output "ssh_connection_command" {
-    value = "ssh -i ${local_file.private_key.filename} ec2-user@${aws_instance.k8s_instance.public_ip}"
+  output "ssh_to_k8s_connection_command" {
+    value = "ssh -i ${local_file.private_key.filename} ec2-user@${aws_instance.k8s_instance.public_ip} -o StrictHostKeyChecking=no"
   }
 resource "local_file" "private_key" {
   filename = "${path.module}/k8s-key.pem"
