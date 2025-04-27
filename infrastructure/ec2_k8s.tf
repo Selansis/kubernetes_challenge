@@ -15,7 +15,7 @@ resource "aws_instance" "k8s_instance" {
   subnet_id     = aws_subnet.k8s_subnet.id
   key_name      = aws_key_pair.k8s_key.key_name
   vpc_security_group_ids = [aws_security_group.k8s_sg.id]
-  user_data = file("${path.module}/startup.sh")
+  user_data = file("${path.module}/startup_k8s.sh")
    
   tags = {
       Name = "k8s-instance"
