@@ -1,9 +1,7 @@
 pipeline {
     agent any 
     
-    tools {
-        terraform 'Tf_1.7' // Pozostawimy to, zakładając, że zainstalujesz wtyczkę lub to usuniesz, jeśli błąd 1. się powtórzy.
-    }
+    // USUNIĘTO BŁĘDNY BLOK 'tools'
 
     parameters {
         string(
@@ -21,7 +19,8 @@ pipeline {
     stages {
         
         stage('Initialize & Validate') {
-            steps { 
+            steps { // <--- POCZĄTEK BLOKU STEPS (MUSI BYĆ!)
+                // PRZENIESIONO USTAWIANIE ZMIENNEJ DO BLOKU 'steps'
                 env.AWS_DEFAULT_REGION = params.AWS_REGION 
                 
                 echo "Uruchamiam inicjalizację i walidację w regionie ${env.AWS_DEFAULT_REGION}."
@@ -30,14 +29,14 @@ pipeline {
                     sh 'terraform init' 
                     sh 'terraform validate'
                 }
-            } 
+            } // <--- KONIEC BLOKU STEPS
         }
         
         stage('Terraform Build (Plan & Apply)') {
             when {
                 expression { return params.ACTION == 'build' }
             }
-            steps { // BLOK 'steps' TERAZ ZAWIERA KOMENDY BEZPOŚREDNIO
+            steps {
                 echo "Akcja BUILD wybrana."
                 dir('infrastructure') {
                     sh 'terraform plan -out=tfplan' 
@@ -50,7 +49,7 @@ pipeline {
             when {
                 expression { return params.ACTION == 'destroy' }
             }
-            steps { // BLOK 'steps' TERAZ ZAWIERA KOMENDY BEZPOŚREDNIO
+            steps {
                 echo "Akcja DESTROY wybrana. UWAGA: Infrastruktura zostanie usunięta."
                 dir('infrastructure') {
                     sh 'terraform destroy -auto-approve'
