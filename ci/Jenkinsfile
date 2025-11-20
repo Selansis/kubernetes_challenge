@@ -1,12 +1,27 @@
 pipeline {
     agent any 
     
-    // ... (parametry)
+    tools {
+        terraform 'Tf_1.7' // Pozostawimy to, zakładając, że zainstalujesz wtyczkę lub to usuniesz, jeśli błąd 1. się powtórzy.
+    }
+
+    parameters {
+        string(
+            name: 'AWS_REGION',
+            defaultValue: 'eu-central-1',
+            description: 'Region AWS do wdrożenia.'
+        )
+        choice(
+            name: 'ACTION',
+            choices: ['build', 'destroy'],
+            description: 'Wybierz akcję: build (init, plan, apply) lub destroy.'
+        )
+    }
 
     stages {
         
         stage('Initialize & Validate') {
-            steps { // <--- KLUCZOWE: USTAWIANIE ZMIENNEJ W BLOKU 'steps'
+            steps { 
                 env.AWS_DEFAULT_REGION = params.AWS_REGION 
                 
                 echo "Uruchamiam inicjalizację i walidację w regionie ${env.AWS_DEFAULT_REGION}."
@@ -15,23 +30,30 @@ pipeline {
                     sh 'terraform init' 
                     sh 'terraform validate'
                 }
-            } // <--- KONIEC BLOKU 'steps'
+            } 
         }
         
         stage('Terraform Build (Plan & Apply)') {
-            when { expression { return params.ACTION == 'build' } }
-            steps { // <--- W KAŻDYM ETAPIE WARUNKOWYM POTRZEBNY JEST BLOK 'steps'
-                script {
-                    // ... komendy sh
+            when {
+                expression { return params.ACTION == 'build' }
+            }
+            steps { // BLOK 'steps' TERAZ ZAWIERA KOMENDY BEZPOŚREDNIO
+                echo "Akcja BUILD wybrana."
+                dir('infrastructure') {
+                    sh 'terraform plan -out=tfplan' 
+                    sh 'terraform apply -auto-approve tfplan'
                 }
             }
         }
 
         stage('Terraform Destroy') {
-            when { expression { return params.ACTION == 'destroy' } }
-            steps { // <--- W KAŻDYM ETAPIE WARUNKOWYM POTRZEBNY JEST BLOK 'steps'
-                script {
-                    // ... komendy sh
+            when {
+                expression { return params.ACTION == 'destroy' }
+            }
+            steps { // BLOK 'steps' TERAZ ZAWIERA KOMENDY BEZPOŚREDNIO
+                echo "Akcja DESTROY wybrana. UWAGA: Infrastruktura zostanie usunięta."
+                dir('infrastructure') {
+                    sh 'terraform destroy -auto-approve'
                 }
             }
         }
