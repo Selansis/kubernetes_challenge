@@ -1,14 +1,10 @@
 pipeline {
     agent any 
     
-    // USUNIĘTO BLOK 'tools' - UPEWNIJ SIĘ, ŻE JEST USUNIĘTY!
+    // USUNIĘTO BLOK 'tools'
 
     parameters {
-        string(
-            name: 'AWS_REGION',
-            defaultValue: 'eu-central-1',
-            description: 'Region AWS do wdrożenia.'
-        )
+        // POZOSTAŁ TYLKO PARAMETR AKCJI
         choice(
             name: 'ACTION',
             choices: ['build', 'destroy'],
@@ -19,18 +15,16 @@ pipeline {
     stages {
         
         stage('Initialize & Validate') {
-            steps { // <--- POCZĄTEK BLOKU STEPS (KLUCZOWY!)
+            steps { 
+                // USUNIĘTO LINIE: env.AWS_DEFAULT_REGION = params.AWS_REGION
                 
-                // USTAWIENIE ZMIENNEJ W ŚRODKU BLOKU 'steps'
-                env.AWS_DEFAULT_REGION = params.AWS_REGION 
-                
-                echo "Uruchamiam inicjalizację i walidację w regionie ${env.AWS_DEFAULT_REGION}."
+                echo "Uruchamiam inicjalizację i walidację."
                 
                 dir('infrastructure') {
                     sh 'terraform init' 
                     sh 'terraform validate'
                 }
-            } // <--- KONIEC BLOKU STEPS
+            } 
         }
         
         stage('Terraform Build (Plan & Apply)') {
