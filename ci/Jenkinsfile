@@ -1,7 +1,7 @@
 pipeline {
     agent any 
     
-    // USUNIĘTO BŁĘDNY BLOK 'tools'
+    // USUNIĘTO BLOK 'tools' - UPEWNIJ SIĘ, ŻE JEST USUNIĘTY!
 
     parameters {
         string(
@@ -19,8 +19,9 @@ pipeline {
     stages {
         
         stage('Initialize & Validate') {
-            steps { // <--- POCZĄTEK BLOKU STEPS (MUSI BYĆ!)
-                // PRZENIESIONO USTAWIANIE ZMIENNEJ DO BLOKU 'steps'
+            steps { // <--- POCZĄTEK BLOKU STEPS (KLUCZOWY!)
+                
+                // USTAWIENIE ZMIENNEJ W ŚRODKU BLOKU 'steps'
                 env.AWS_DEFAULT_REGION = params.AWS_REGION 
                 
                 echo "Uruchamiam inicjalizację i walidację w regionie ${env.AWS_DEFAULT_REGION}."
