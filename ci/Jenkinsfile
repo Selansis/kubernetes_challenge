@@ -1,54 +1,28 @@
+// ci/Jenkinsfile
 pipeline {
-    agent any
-
-    parameters {
-        string(name: 'Container_version', defaultValue: 'latest', description: 'Wersja kontenera')
-    }
-
-    environment {
-        DOCKER_IMAGE = "selansis/k8s_challenge"
-        DOCKER_TAG = "${params.Container_version}"
-    }
+    // Agent 'any' lub 'label' dla tego konkretnego hosta
+    agent any 
+    
+    // ... (params, stages, itp.)
 
     stages {
-        stage('Checkout Code') {
-            steps {
-                git(
-                    url: 'https://github.com/Selansis/kubernetes_challenge.git',
-                    branch: 'main' 
-                )
-            }
-        }
-
-        stage('Build Docker Image') {
+        stage('Terraform Execution') {
             steps {
                 script {
-                    sh "docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} ."
-                }
-            }
-        }
+                    // W tym miejscu env.AWS_ACCESS_KEY_ID i env.AWS_SECRET_ACCESS_KEY 
+                    // są już dostępne dzięki zmiennym systemowym!
+                    
+                    env.AWS_DEFAULT_REGION = params.AWS_REGION // Wstrzykujemy tylko region z parametru
 
-        stage('Push Docker Image') {
-            steps {
-                script {
-                    withCredentials([usernamePassword(credentialsId: 'dockerhub_id', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                        sh """
-                            echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-                            docker push ${DOCKER_IMAGE}:${DOCKER_TAG}
-                        """
-                    }
-                }
-            }
-        }
+                    dir('infrastructure') {
+                        sh 'terraform init'
 
-        stage('Deploy to Kubernetes') {
-            steps {
-                withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
-                    script {
-                sh """
-                    export KUBECONFIG=${KUBECONFIG}
-                    minikube kubectl -- set image deployment/website-deployment apache=${DOCKER_IMAGE}:${DOCKER_TAG}
-                """
+                        if (params.ACTION == 'apply') {
+                            // Terraform automatycznie użyje zmiennych środowiskowych do autoryzacji
+                            sh 'terraform apply -auto-approve'
+                        } else if (params.ACTION == 'destroy') {
+                            sh 'terraform destroy -auto-approve'
+                        }
                     }
                 }
             }

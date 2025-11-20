@@ -18,3 +18,4 @@ systemctl enable grafana-server
 systemctl start grafana-server
 
 echo "Grafana installed manually from RPM and started."
+    
