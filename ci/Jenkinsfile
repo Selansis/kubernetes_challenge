@@ -1,11 +1,8 @@
 pipeline {
     agent any 
     
-    // Upewnij się, że Agent ma Terraform w PATH
-    tools {
-        terraform 'Tf_1.7' 
-    }
-
+    // USUNIĘTO BŁĘDNY BLOK 'tools'
+    
     // Parametry, które użytkownik wprowadzi w GUI
     parameters {
         string(
@@ -13,7 +10,6 @@ pipeline {
             defaultValue: 'eu-central-1',
             description: 'Region AWS do wdrożenia.'
         )
-        // Zmieniony parametr wyboru
         choice(
             name: 'ACTION',
             choices: ['build', 'destroy'],
@@ -24,50 +20,42 @@ pipeline {
     stages {
         
         stage('Initialize & Validate') {
-            steps {
-                echo 'Uruchamiam inicjalizację i walidację.'
-                
-                // Zmienna środowiskowa dla regionu AWS
+            steps { // START POPRAWIONY BLOK STEPS
+                // POPRAWKA BŁĘDU 2: Ustawienie zmiennej musi być wewnątrz 'steps'
                 env.AWS_DEFAULT_REGION = params.AWS_REGION 
+                
+                echo "Uruchamiam inicjalizację i walidację w regionie ${env.AWS_DEFAULT_REGION}."
                 
                 dir('infrastructure') {
                     sh 'terraform init' 
                     sh 'terraform validate'
                 }
-            }
+            } // KONIEC POPRAWIONEGO BLOKU STEPS
         }
         
-        // Nowy Etap: Budowanie Infrastruktury (Plan + Apply)
         stage('Terraform Build (Plan & Apply)') {
-            // Wykonaj ten etap TYLKO, gdy użytkownik wybrał 'build'
             when {
                 expression { return params.ACTION == 'build' }
             }
             steps {
                 script {
-                    echo "Akcja BUILD wybrana dla regionu ${params.AWS_REGION}."
+                    echo "Akcja BUILD wybrana."
                     dir('infrastructure') {
-                        // 1. Planowanie
                         sh 'terraform plan -out=tfplan' 
-                        
-                        // 2. Aplikowanie
                         sh 'terraform apply -auto-approve tfplan'
                     }
                 }
             }
         }
 
-        // Nowy Etap: Usuwanie Infrastruktury (Destroy)
         stage('Terraform Destroy') {
-            // Wykonaj ten etap TYLKO, gdy użytkownik wybrał 'destroy'
             when {
                 expression { return params.ACTION == 'destroy' }
             }
             steps {
                 script {
-                    echo "Akcja DESTROY wybrana dla regionu ${params.AWS_REGION}. UWAGA!"
+                    echo "Akcja DESTROY wybrana. UWAGA: Infrastruktura zostanie usunięta."
                     dir('infrastructure') {
-                        // Uruchomienie destroy
                         sh 'terraform destroy -auto-approve'
                     }
                 }
