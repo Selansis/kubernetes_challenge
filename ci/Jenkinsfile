@@ -1,27 +1,12 @@
 pipeline {
     agent any 
     
-    // USUNIĘTO BŁĘDNY BLOK 'tools'
-    
-    // Parametry, które użytkownik wprowadzi w GUI
-    parameters {
-        string(
-            name: 'AWS_REGION',
-            defaultValue: 'eu-central-1',
-            description: 'Region AWS do wdrożenia.'
-        )
-        choice(
-            name: 'ACTION',
-            choices: ['build', 'destroy'],
-            description: 'Wybierz akcję: build (init, plan, apply) lub destroy.'
-        )
-    }
+    // ... (parametry)
 
     stages {
         
         stage('Initialize & Validate') {
-            steps { // START POPRAWIONY BLOK STEPS
-                // POPRAWKA BŁĘDU 2: Ustawienie zmiennej musi być wewnątrz 'steps'
+            steps { // <--- KLUCZOWE: USTAWIANIE ZMIENNEJ W BLOKU 'steps'
                 env.AWS_DEFAULT_REGION = params.AWS_REGION 
                 
                 echo "Uruchamiam inicjalizację i walidację w regionie ${env.AWS_DEFAULT_REGION}."
@@ -30,34 +15,23 @@ pipeline {
                     sh 'terraform init' 
                     sh 'terraform validate'
                 }
-            } // KONIEC POPRAWIONEGO BLOKU STEPS
+            } // <--- KONIEC BLOKU 'steps'
         }
         
         stage('Terraform Build (Plan & Apply)') {
-            when {
-                expression { return params.ACTION == 'build' }
-            }
-            steps {
+            when { expression { return params.ACTION == 'build' } }
+            steps { // <--- W KAŻDYM ETAPIE WARUNKOWYM POTRZEBNY JEST BLOK 'steps'
                 script {
-                    echo "Akcja BUILD wybrana."
-                    dir('infrastructure') {
-                        sh 'terraform plan -out=tfplan' 
-                        sh 'terraform apply -auto-approve tfplan'
-                    }
+                    // ... komendy sh
                 }
             }
         }
 
         stage('Terraform Destroy') {
-            when {
-                expression { return params.ACTION == 'destroy' }
-            }
-            steps {
+            when { expression { return params.ACTION == 'destroy' } }
+            steps { // <--- W KAŻDYM ETAPIE WARUNKOWYM POTRZEBNY JEST BLOK 'steps'
                 script {
-                    echo "Akcja DESTROY wybrana. UWAGA: Infrastruktura zostanie usunięta."
-                    dir('infrastructure') {
-                        sh 'terraform destroy -auto-approve'
-                    }
+                    // ... komendy sh
                 }
             }
         }
